@@ -14,19 +14,34 @@
             color: #0F172A; /* Slate-900 */
         }
         
-        /* Chart Container Styling as per requirements */
+        /* Hide scrollbar utility for mobile touch areas */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        
+        /* Responsive Chart Container Styling */
         .chart-container {
             position: relative;
             width: 100%;
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
-            height: 350px;
-            max-height: 400px;
+            height: 250px; /* Reduced for small mobile screens to prevent overflow */
             background: #ffffff;
             border-radius: 1rem;
-            padding: 1rem;
+            padding: 0.75rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        @media (min-width: 480px) {
+            .chart-container {
+                height: 300px;
+                padding: 1rem;
+            }
         }
 
         @media (min-width: 768px) {
@@ -63,124 +78,112 @@
 </head>
 <body class="antialiased">
 
-<!-- Chosen Palette: Warm Neutrals (Slate) for background, Deep Navy/Slate for text, Blue/Teal accents for data & trust -->
-<!-- Application Structure Plan: 
-    1. Hero/Dashboard: Quick executive summary and key metrics to immediately ground the user in the 'investment' context.
-    2. Sticky Navigation: Allows non-linear exploration of policy pillars.
-    3. Thematic Sections (Sovereign AI, Diplomacy, UN Agency): Each structured with an introductory context paragraph, key bullet points, and an interactive element (diagram or chart) to break down complex policy into digestible bits.
-    4. Investment Perspective (Core): A dedicated interactive dashboard where users can click different AI sectors to see dynamic text and chart updates. This translates policy directly into actionable investment insights.
-    * Reason for structure: Investors need bottom-line upfront (Hero), policy validation (Sections), and actionable insights (Interactive Investment section). It moves from macro-policy to micro-investment. 
--->
-<!-- Visualization & Content Choices: 
-    - Sovereign AI Budget -> Goal: Inform on state priorities -> Viz: Doughnut Chart (Chart.js) -> Justification: Shows proportional allocation of government funds.
-    - Diplomatic Tours -> Goal: Organize & Relationships -> Viz: Interactive HTML/CSS Grid Cards -> Interaction: Click to expand details -> Justification: Summarizes qualitative diplomatic outcomes cleanly without overwhelming text. NO SVG used.
-    - UN Agency Hosting -> Goal: Inform on process/timeline -> Viz: HTML/CSS Vertical Timeline -> Justification: Shows chronological progression and future milestones effectively. NO Mermaid/SVG used.
-    - Investment Sectors -> Goal: Compare & Change -> Viz: Dynamic Bar/Line Charts + Text Blocks (Chart.js + JS Vanilla) -> Interaction: Sector selection buttons -> Justification: Allows users to drill down into specific investment verticals based on the policy context.
--->
-<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
-
     <!-- Navigation -->
     <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center">
-                    <span class="text-xl font-black tracking-tighter text-blue-900">🇰🇷 K-AI Strategy Report</span>
+            <div class="flex justify-between items-center h-16 gap-4">
+                <div class="flex-shrink-0">
+                    <span class="text-base sm:text-xl font-black tracking-tighter text-blue-900">
+                        <span class="inline sm:hidden">🇰🇷 K-AI 리포트</span>
+                        <span class="hidden sm:inline">🇰🇷 K-AI Strategy Report</span>
+                    </span>
                 </div>
-                <div class="hidden md:flex space-x-8 items-center">
-                    <a href="#overview" class="text-slate-600 hover:text-blue-600 font-medium text-sm transition-colors">거시 전망</a>
-                    <a href="#sovereign" class="text-slate-600 hover:text-blue-600 font-medium text-sm transition-colors">소버린 AI 추진</a>
-                    <a href="#diplomacy" class="text-slate-600 hover:text-blue-600 font-medium text-sm transition-colors">AI 외교 성과</a>
-                    <a href="#un-agency" class="text-slate-600 hover:text-blue-600 font-medium text-sm transition-colors">유엔 기구 유치</a>
-                    <a href="#investment" class="bg-blue-600 text-white px-4 py-2 rounded-lg font-bold text-sm hover:bg-blue-700 transition-colors">투자 전략 🎯</a>
+                <!-- Horizontal swipable nav bar on mobile to prevent wrapping -->
+                <div class="flex overflow-x-auto no-scrollbar space-x-4 sm:space-x-8 items-center py-2 -my-2 max-w-full">
+                    <a href="#overview" class="text-slate-600 hover:text-blue-600 font-semibold text-xs sm:text-sm whitespace-nowrap transition-colors">거시 전망</a>
+                    <a href="#sovereign" class="text-slate-600 hover:text-blue-600 font-semibold text-xs sm:text-sm whitespace-nowrap transition-colors">소버린 AI</a>
+                    <a href="#diplomacy" class="text-slate-600 hover:text-blue-600 font-semibold text-xs sm:text-sm whitespace-nowrap transition-colors">AI 외교</a>
+                    <a href="#un-agency" class="text-slate-600 hover:text-blue-600 font-semibold text-xs sm:text-sm whitespace-nowrap transition-colors">유엔 기구</a>
+                    <a href="#investment" class="bg-blue-600 text-white px-2.5 py-1.5 sm:px-4 sm:py-2 rounded-lg font-bold text-xs sm:text-sm whitespace-nowrap hover:bg-blue-700 transition-colors">투자 전략 🎯</a>
                 </div>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <header id="overview" class="pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 mb-6 leading-tight">
-            이재명 정부 AI 정책 종합 분석 및 <br>
+    <header id="overview" class="pt-12 pb-10 sm:pt-20 sm:pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto text-center">
+        <h1 class="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-slate-900 mb-4 sm:mb-6 leading-tight">
+            이재명 정부 AI 정책 종합 분석 및 <br class="hidden sm:inline">
             <span class="text-blue-600">투자 관점의 미래 전략</span>
         </h1>
-        <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-10 leading-relaxed">
+        <p class="text-sm sm:text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mb-6 sm:mb-10 leading-relaxed px-2">
             '디지털 주권'을 넘어선 '소버린 AI(Sovereign AI)' 강국 도약. 정부 출범 이후 공격적인 국가 인프라 투자와 실용적 AI 외교, 그리고 유엔(UN) AI 거버넌스 기구 유치까지. 본 보고서는 정책의 흐름을 분석하고 핵심 투자 섹터를 제시합니다.
         </p>
         
         <!-- Key Metrics Dashboard -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto mt-8">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
-                <span class="text-3xl mb-2">💰</span>
-                <span class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">국가 AI 예산</span>
-                <span class="text-2xl font-black text-slate-800">12조원+</span>
-                <span class="text-xs text-green-500 font-medium mt-1">▲ 전년비 45% 증가</span>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 max-w-4xl mx-auto mt-6 sm:mt-8">
+            <div class="bg-white p-3 sm:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
+                <span class="text-2xl sm:text-3xl mb-1 sm:mb-2">💰</span>
+                <span class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">국가 AI 예산</span>
+                <span class="text-lg sm:text-2xl font-black text-slate-800">12조원+</span>
+                <span class="text-[9px] sm:text-xs text-green-500 font-medium mt-0.5">▲ 전년비 45% 증가</span>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
-                <span class="text-3xl mb-2">🏭</span>
-                <span class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">데이터센터 확충</span>
-                <span class="text-2xl font-black text-slate-800">권역별 5곳</span>
-                <span class="text-xs text-blue-500 font-medium mt-1">국가 주도 메가 클러스터</span>
+            <div class="bg-white p-3 sm:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
+                <span class="text-2xl sm:text-3xl mb-1 sm:mb-2">🏭</span>
+                <span class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">데이터센터 확충</span>
+                <span class="text-lg sm:text-2xl font-black text-slate-800">권역별 5곳</span>
+                <span class="text-[9px] sm:text-xs text-blue-500 font-medium mt-0.5">국가 주도 메가클러스터</span>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
-                <span class="text-3xl mb-2">🤝</span>
-                <span class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">글로벌 MOU</span>
-                <span class="text-2xl font-black text-slate-800">18건</span>
-                <span class="text-xs text-slate-500 font-medium mt-1">미/유럽/동남아 순방 결과</span>
+            <div class="bg-white p-3 sm:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
+                <span class="text-2xl sm:text-3xl mb-1 sm:mb-2">🤝</span>
+                <span class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">글로벌 MOU</span>
+                <span class="text-lg sm:text-2xl font-black text-slate-800">18건</span>
+                <span class="text-[9px] sm:text-xs text-slate-500 font-medium mt-0.5">미/유럽/동남아 순방</span>
             </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center">
-                <span class="text-3xl mb-2">📈</span>
-                <span class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-1">K-AI 지수 수익률</span>
-                <span class="text-2xl font-black text-slate-800">+34.2%</span>
-                <span class="text-xs text-green-500 font-medium mt-1">정부 출범 이후 (추정치)</span>
+            <div class="bg-white p-3 sm:p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
+                <span class="text-2xl sm:text-3xl mb-1 sm:mb-2">📈</span>
+                <span class="text-[10px] sm:text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">K-AI 지수 수익률</span>
+                <span class="text-lg sm:text-2xl font-black text-slate-800">+34.2%</span>
+                <span class="text-[9px] sm:text-xs text-green-500 font-medium mt-0.5">정부 출범 이후 (추정)</span>
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-24">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-16 sm:space-y-24">
 
         <!-- 1. 소버린 AI 추진 과정 -->
         <section id="sovereign" class="scroll-mt-24">
-            <div class="mb-8">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4 flex items-center gap-3">
-                    <span class="text-blue-600">01.</span> 소버린 AI (Sovereign AI) 추진 전략
+            <div class="mb-6 sm:mb-8">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
+                    <span class="text-blue-600 text-xl sm:text-2xl">01.</span> 소버린 AI (Sovereign AI) 추진 전략
                 </h2>
-                <p class="text-lg text-slate-600 leading-relaxed bg-white p-6 rounded-xl border-l-4 border-blue-600 shadow-sm">
+                <p class="text-sm sm:text-lg text-slate-600 leading-relaxed bg-white p-4 sm:p-6 rounded-xl border-l-4 border-blue-600 shadow-sm">
                     이재명 정부의 AI 정책 핵심은 <strong>'기술 종속 탈피'</strong>와 <strong>'데이터 주권 확보'</strong>입니다. 미국 빅테크에 의존하지 않는 자체적인 국가 인공지능 인프라 구축을 목표로, 한국어 특화 초거대 LLM 지원, 토종 AI 반도체(NPU/PIM) 공공 도입 의무화, 그리고 재생에너지 기반의 친환경 국가 데이터센터(SDC) 건립을 강하게 밀어붙이고 있습니다. 이는 강력한 정부 주도 인프라 투자를 의미하며, 관련 밸류체인에 막대한 자금이 유입되고 있습니다.
                 </p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div>
-                    <h3 class="text-xl font-bold mb-4 text-slate-800">주요 정책 로드맵 및 향후 방향</h3>
-                    <ul class="space-y-4">
-                        <li class="flex gap-4">
-                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xl">1</div>
+            <div class="grid md:grid-cols-2 gap-6 sm:gap-8 items-center">
+                <div class="order-2 md:order-1">
+                    <h3 class="text-lg sm:text-xl font-bold mb-3 sm:mb-4 text-slate-800">주요 정책 로드맵 및 향후 방향</h3>
+                    <ul class="space-y-3 sm:space-y-4">
+                        <li class="flex gap-3 sm:gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-base sm:text-xl">1</div>
                             <div>
-                                <h4 class="font-bold text-slate-900">공공부문 토종 AI 우선 도입</h4>
-                                <p class="text-sm text-slate-600 mt-1">행정망 및 공공 서비스에 국내 기업이 개발한 LLM 모델과 NPU 서버 전면 도입. 초기 수요 창출.</p>
+                                <h4 class="font-bold text-sm sm:text-base text-slate-900">공공부문 토종 AI 우선 도입</h4>
+                                <p class="text-xs sm:text-sm text-slate-600 mt-0.5">행정망 및 공공 서비스에 국내 기업이 개발한 LLM 모델과 NPU 서버 전면 도입. 초기 수요 창출.</p>
                             </div>
                         </li>
-                        <li class="flex gap-4">
-                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xl">2</div>
+                        <li class="flex gap-3 sm:gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-base sm:text-xl">2</div>
                             <div>
-                                <h4 class="font-bold text-slate-900">AI 기본법(가칭) 통과 및 규제 정비</h4>
-                                <p class="text-sm text-slate-600 mt-1">저작권 문제 해결 및 AI 산출물 보호, 스타트업 규제 샌드박스 확대를 통한 산업 진흥 중심의 법제화 완료.</p>
+                                <h4 class="font-bold text-sm sm:text-base text-slate-900">AI 기본법(가칭) 통과 및 규제 정비</h4>
+                                <p class="text-xs sm:text-sm text-slate-600 mt-0.5">저작권 문제 해결 및 AI 산출물 보호, 스타트업 규제 샌드박스 확대를 통한 산업 진흥 중심의 법제화 완료.</p>
                             </div>
                         </li>
-                        <li class="flex gap-4">
-                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xl">3</div>
+                        <li class="flex gap-3 sm:gap-4">
+                            <div class="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-base sm:text-xl">3</div>
                             <div>
-                                <h4 class="font-bold text-slate-900">국가 통합 데이터 댐 2.0</h4>
-                                <p class="text-sm text-slate-600 mt-1">산업별(의료, 금융, 제조) 고품질 학습 데이터를 국가가 매입하여 기업에 저렴하게 개방.</p>
+                                <h4 class="font-bold text-sm sm:text-base text-slate-900">국가 통합 데이터 댐 2.0</h4>
+                                <p class="text-xs sm:text-sm text-slate-600 mt-0.5">산업별(의료, 금융, 제조) 고품질 학습 데이터를 국가가 매입하여 기업에 저렴하게 개방.</p>
                             </div>
                         </li>
                     </ul>
                 </div>
                 
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                    <h3 class="text-center font-bold text-slate-800 mb-2">국가 AI 산업 육성 예산 배분 전망</h3>
-                    <p class="text-center text-xs text-slate-500 mb-4">인프라 구축과 하드웨어 자립에 압도적 비중 할당</p>
-                    <div class="chart-container h-80">
+                <div class="order-1 md:order-2 bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <h3 class="text-center font-bold text-sm sm:text-base text-slate-800 mb-1">국가 AI 산업 육성 예산 배분 전망</h3>
+                    <p class="text-center text-[10px] sm:text-xs text-slate-500 mb-3 sm:mb-4">인프라 구축과 하드웨어 자립에 압도적 비중 할당</p>
+                    <div class="chart-container">
                         <canvas id="budgetChart"></canvas>
                     </div>
                 </div>
@@ -189,71 +192,71 @@
 
         <!-- 2. AI 정책 외교 순방 -->
         <section id="diplomacy" class="scroll-mt-24">
-            <div class="mb-8">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4 flex items-center gap-3">
-                    <span class="text-blue-600">02.</span> 실용주의 AI 외교와 글로벌 연대
+            <div class="mb-6 sm:mb-8">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
+                    <span class="text-blue-600 text-xl sm:text-2xl">02.</span> 실용주의 AI 외교와 글로벌 연대
                 </h2>
-                <p class="text-lg text-slate-600 leading-relaxed bg-white p-6 rounded-xl border-l-4 border-indigo-600 shadow-sm">
+                <p class="text-sm sm:text-lg text-slate-600 leading-relaxed bg-white p-4 sm:p-6 rounded-xl border-l-4 border-indigo-600 shadow-sm">
                     대통령 취임 이후 진행된 일련의 해외 순방은 철저히 <strong>'AI 기술 동맹'</strong>과 <strong>'K-AI 수출 시장 개척'</strong>에 초점이 맞춰졌습니다. 미국과는 인프라/반도체 협력을 공고히 하고, 유럽과는 AI 윤리 및 규범(AI Act) 공조를, 아세안 및 중동에는 한국형 모델(국방/전자정부 AI)을 수출하는 다각적 실용 외교를 전개했습니다.
                 </p>
             </div>
 
             <!-- Interactive Diplomacy Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                 <!-- Card 1 -->
-                <div class="interactive-card bg-white p-6 rounded-2xl border border-slate-200 cursor-pointer group" onclick="toggleDiplomacyDetails('us')">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-4xl">🇺🇸</span>
-                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded">한-미 정상회담</span>
+                <div class="interactive-card bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 cursor-pointer group" onclick="toggleDiplomacyDetails('us')">
+                    <div class="flex justify-between items-center mb-3 sm:mb-4">
+                        <span class="text-3xl sm:text-4xl">🇺🇸</span>
+                        <span class="bg-indigo-100 text-indigo-700 text-[10px] sm:text-xs font-bold px-2 py-1 rounded">한-미 정상회담</span>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">첨단 기술 동맹 격상</h3>
-                    <p class="text-sm text-slate-600 mb-4">실리콘밸리 빅테크와 K-반도체의 결합. 양자/AI 공동 R&D 펀드 조성.</p>
-                    <div id="details-us" class="hidden text-sm bg-slate-50 p-4 rounded-lg border border-slate-100 text-slate-700 mt-2">
+                    <h3 class="text-lg sm:text-xl font-bold text-slate-900 mb-1 sm:mb-2">첨단 기술 동맹 격상</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 mb-3 sm:mb-4">실리콘밸리 빅테크와 K-반도체의 결합. 양자/AI 공동 R&D 펀드 조성.</p>
+                    <div id="details-us" class="hidden text-xs sm:text-sm bg-slate-50 p-3 sm:p-4 rounded-lg border border-slate-100 text-slate-700 mt-2">
                         <strong>핵심 성과:</strong><br>
                         - 미국 빅테크의 韓 데이터센터 직접 투자 유치<br>
                         - HBM 차세대 모델 우선 공급 협약<br>
                         - <span class="text-blue-600 font-semibold">투자 포인트:</span> 국내 데이터센터 건립(전력/공조) 및 메모리 반도체 소부장
                     </div>
                     <div class="text-center mt-2">
-                        <span class="text-xs text-slate-400 group-hover:text-blue-500 transition-colors">자세히 보기 ▼</span>
+                        <span class="text-[10px] sm:text-xs text-slate-400 group-hover:text-blue-500 transition-colors">자세히 보기 ▼</span>
                     </div>
                 </div>
 
                 <!-- Card 2 -->
-                <div class="interactive-card bg-white p-6 rounded-2xl border border-slate-200 cursor-pointer group" onclick="toggleDiplomacyDetails('eu')">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-4xl">🇪🇺</span>
-                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded">유럽 순방</span>
+                <div class="interactive-card bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 cursor-pointer group" onclick="toggleDiplomacyDetails('eu')">
+                    <div class="flex justify-between items-center mb-3 sm:mb-4">
+                        <span class="text-3xl sm:text-4xl">🇪🇺</span>
+                        <span class="bg-indigo-100 text-indigo-700 text-[10px] sm:text-xs font-bold px-2 py-1 rounded">유럽 순방</span>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">거버넌스 및 윤리 공조</h3>
-                    <p class="text-sm text-slate-600 mb-4">EU AI 법안(AI Act)에 대응하는 규범 연대 및 유럽 내 비영어권 LLM 연합.</p>
-                    <div id="details-eu" class="hidden text-sm bg-slate-50 p-4 rounded-lg border border-slate-100 text-slate-700 mt-2">
+                    <h3 class="text-lg sm:text-xl font-bold text-slate-900 mb-1 sm:mb-2">거버넌스 및 윤리 공조</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 mb-3 sm:mb-4">EU AI 법안(AI Act)에 대응하는 규범 연대 및 유럽 내 비영어권 LLM 연합.</p>
+                    <div id="details-eu" class="hidden text-xs sm:text-sm bg-slate-50 p-3 sm:p-4 rounded-lg border border-slate-100 text-slate-700 mt-2">
                         <strong>핵심 성과:</strong><br>
                         - 韓-EU AI 신뢰성 검증 표준화 합의<br>
                         - 비영어권(프랑스/독일 등) 소버린 AI 공동 전선 구축<br>
                         - <span class="text-blue-600 font-semibold">투자 포인트:</span> AI 보안, 딥페이크 탐지, 개인정보보호 기술(PET) 기업
                     </div>
                     <div class="text-center mt-2">
-                        <span class="text-xs text-slate-400 group-hover:text-blue-500 transition-colors">자세히 보기 ▼</span>
+                        <span class="text-[10px] sm:text-xs text-slate-400 group-hover:text-blue-500 transition-colors">자세히 보기 ▼</span>
                     </div>
                 </div>
 
                 <!-- Card 3 -->
-                <div class="interactive-card bg-white p-6 rounded-2xl border border-slate-200 cursor-pointer group" onclick="toggleDiplomacyDetails('asean')">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-4xl">🇦🇪/🇮🇩</span>
-                        <span class="bg-indigo-100 text-indigo-700 text-xs font-bold px-2 py-1 rounded">중동/아세안</span>
+                <div class="interactive-card bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 cursor-pointer group" onclick="toggleDiplomacyDetails('asean')">
+                    <div class="flex justify-between items-center mb-3 sm:mb-4">
+                        <span class="text-3xl sm:text-4xl">🇦🇪/🇮🇩</span>
+                        <span class="bg-indigo-100 text-indigo-700 text-[10px] sm:text-xs font-bold px-2 py-1 rounded">중동/아세안</span>
                     </div>
-                    <h3 class="text-xl font-bold text-slate-900 mb-2">K-AI 패키지 수출</h3>
-                    <p class="text-sm text-slate-600 mb-4">데이터 주권을 고민하는 제3세계 국가들에 맞춤형 한국형 인프라 수출.</p>
-                    <div id="details-asean" class="hidden text-sm bg-slate-50 p-4 rounded-lg border border-slate-100 text-slate-700 mt-2">
+                    <h3 class="text-lg sm:text-xl font-bold text-slate-900 mb-1 sm:mb-2">K-AI 패키지 수출</h3>
+                    <p class="text-xs sm:text-sm text-slate-600 mb-3 sm:mb-4">데이터 주권을 고민하는 제3세계 국가들에 맞춤형 한국형 인프라 수출.</p>
+                    <div id="details-asean" class="hidden text-xs sm:text-sm bg-slate-50 p-3 sm:p-4 rounded-lg border border-slate-100 text-slate-700 mt-2">
                         <strong>핵심 성과:</strong><br>
                         - UAE 국부펀드 AI 클러스터 투자 유치<br>
                         - 인니/말련에 韓 통신사들의 클라우드 인프라 진출<br>
                         - <span class="text-blue-600 font-semibold">투자 포인트:</span> 클라우드 MSP 사업자, B2B 엔터프라이즈 AI 솔루션
                     </div>
                     <div class="text-center mt-2">
-                        <span class="text-xs text-slate-400 group-hover:text-blue-500 transition-colors">자세히 보기 ▼</span>
+                        <span class="text-[10px] sm:text-xs text-slate-400 group-hover:text-blue-500 transition-colors">자세히 보기 ▼</span>
                     </div>
                 </div>
             </div>
@@ -261,61 +264,66 @@
 
         <!-- 3. 유엔 기구 유치 -->
         <section id="un-agency" class="scroll-mt-24">
-            <div class="mb-8">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4 flex items-center gap-3">
-                    <span class="text-blue-600">03.</span> '유엔 AI 거버넌스 본부' 한국 유치
+            <div class="mb-6 sm:mb-8">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
+                    <span class="text-blue-600 text-xl sm:text-2xl">03.</span> '유엔 AI 거버넌스 본부' 한국 유치
                 </h2>
-                <p class="text-lg text-slate-600 leading-relaxed bg-white p-6 rounded-xl border-l-4 border-teal-600 shadow-sm">
+                <p class="text-sm sm:text-lg text-slate-600 leading-relaxed bg-white p-4 sm:p-6 rounded-xl border-l-4 border-teal-600 shadow-sm">
                     현 정부 AI 외교의 최대 성과는 <strong>'유엔 산하 글로벌 AI 거버넌스 기구(UN AIGO, 가칭)'의 서울(판교) 유치</strong>입니다. 미중 패권 경쟁 속에서 지정학적 중립성을 가진 IT 강국으로서의 이점을 적극 어필한 결과입니다. 이는 한국이 글로벌 AI 룰메이커(Rule-maker)로 부상했음을 의미하며, 국내 AI 산업의 글로벌 스탠다드화 및 막대한 경제적 파급효과를 창출할 것입니다.
                 </p>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
-                <h3 class="text-xl font-bold text-slate-800 mb-6 text-center">유치 성공을 이끈 4단계 프로세스</h3>
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-8">
+                <h3 class="text-lg sm:text-xl font-bold text-slate-800 mb-8 text-center">유치 성공을 이끈 4단계 프로세스</h3>
                 
-                <!-- Pure HTML/CSS Timeline -->
+                <!-- Pure HTML/CSS Adaptive Timeline -->
                 <div class="relative max-w-4xl mx-auto">
-                    <!-- Vertical Line -->
-                    <div class="absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-slate-200 hidden md:block"></div>
+                    <!-- Vertical Line: Aligned left on mobile, centered on desktop -->
+                    <div class="absolute left-6 md:left-1/2 transform -translate-x-1/2 w-1 h-full bg-slate-200"></div>
                     
-                    <div class="space-y-8 relative">
+                    <div class="space-y-10 sm:space-y-12 relative">
                         <!-- Step 1 -->
-                        <div class="flex flex-col md:flex-row items-center w-full justify-between">
-                            <div class="md:w-5/12 text-center md:text-right mb-4 md:mb-0">
-                                <h4 class="font-bold text-lg text-slate-900">제안 및 비전 선포</h4>
-                                <p class="text-sm text-slate-600">UN 총회 기조연설에서 '디지털 포용과 글로벌 사우스 연대' 제안</p>
+                        <div class="flex flex-col md:flex-row items-start md:items-center w-full justify-between">
+                            <div class="w-full md:w-5/12 pl-14 md:pl-0 text-left md:text-right mb-2 md:mb-0">
+                                <span class="text-xs font-bold text-teal-600 uppercase tracking-widest block md:hidden mb-0.5">01단계</span>
+                                <h4 class="font-bold text-base sm:text-lg text-slate-900">제안 및 비전 선포</h4>
+                                <p class="text-xs sm:text-sm text-slate-600 mt-0.5">UN 총회 기조연설에서 '디지털 포용과 글로벌 사우스 연대' 제안</p>
                             </div>
-                            <div class="w-10 h-10 bg-teal-500 rounded-full border-4 border-white shadow flex items-center justify-center text-white font-bold z-10 shrink-0">1</div>
-                            <div class="md:w-5/12"></div>
+                            <!-- Dot positioned carefully for both screen types -->
+                            <div class="absolute left-6 md:left-1/2 transform -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10 bg-teal-500 rounded-full border-4 border-white shadow flex items-center justify-center text-white text-sm sm:text-base font-bold z-10 shrink-0">1</div>
+                            <div class="hidden md:block md:w-5/12"></div>
                         </div>
                         
                         <!-- Step 2 -->
-                        <div class="flex flex-col md:flex-row items-center w-full justify-between flex-col-reverse md:flex-row">
-                            <div class="md:w-5/12"></div>
-                            <div class="w-10 h-10 bg-teal-500 rounded-full border-4 border-white shadow flex items-center justify-center text-white font-bold z-10 shrink-0 mb-4 md:mb-0">2</div>
-                            <div class="md:w-5/12 text-center md:text-left mb-4 md:mb-0">
-                                <h4 class="font-bold text-lg text-slate-900">제도적 인프라 입증</h4>
-                                <p class="text-sm text-slate-600">아시아 최초 포괄적 AI 기본법 제정 및 윤리 가이드라인 UN 제출</p>
+                        <div class="flex flex-col md:flex-row items-start md:items-center w-full justify-between">
+                            <div class="hidden md:block md:w-5/12"></div>
+                            <div class="absolute left-6 md:left-1/2 transform -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10 bg-teal-500 rounded-full border-4 border-white shadow flex items-center justify-center text-white text-sm sm:text-base font-bold z-10 shrink-0">2</div>
+                            <div class="w-full md:w-5/12 pl-14 md:pl-8 text-left">
+                                <span class="text-xs font-bold text-teal-600 uppercase tracking-widest block md:hidden mb-0.5">02단계</span>
+                                <h4 class="font-bold text-base sm:text-lg text-slate-900">제도적 인프라 입증</h4>
+                                <p class="text-xs sm:text-sm text-slate-600 mt-0.5">아시아 최초 포괄적 AI 기본법 제정 및 윤리 가이드라인 UN 제출</p>
                             </div>
                         </div>
 
                         <!-- Step 3 -->
-                        <div class="flex flex-col md:flex-row items-center w-full justify-between">
-                            <div class="md:w-5/12 text-center md:text-right mb-4 md:mb-0">
-                                <h4 class="font-bold text-lg text-slate-900">막판 외교전 (vs 싱가포르, 제네바)</h4>
-                                <p class="text-sm text-slate-600">대통령 특사 파견 및 개도국 대상 AI ODA(공적개발원조) 대폭 확대 약속</p>
+                        <div class="flex flex-col md:flex-row items-start md:items-center w-full justify-between">
+                            <div class="w-full md:w-5/12 pl-14 md:pl-0 text-left md:text-right mb-2 md:mb-0">
+                                <span class="text-xs font-bold text-teal-600 uppercase tracking-widest block md:hidden mb-0.5">03단계</span>
+                                <h4 class="font-bold text-base sm:text-lg text-slate-900">막판 외교전 (vs 싱가포르, 제네바)</h4>
+                                <p class="text-xs sm:text-sm text-slate-600 mt-0.5">대통령 특사 파견 및 개도국 대상 AI ODA(공적개발원조) 대폭 확대 약속</p>
                             </div>
-                            <div class="w-10 h-10 bg-teal-500 rounded-full border-4 border-white shadow flex items-center justify-center text-white font-bold z-10 shrink-0">3</div>
-                            <div class="md:w-5/12"></div>
+                            <div class="absolute left-6 md:left-1/2 transform -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10 bg-teal-500 rounded-full border-4 border-white shadow flex items-center justify-center text-white text-sm sm:text-base font-bold z-10 shrink-0">3</div>
+                            <div class="hidden md:block md:w-5/12"></div>
                         </div>
 
                         <!-- Step 4 -->
-                        <div class="flex flex-col md:flex-row items-center w-full justify-between flex-col-reverse md:flex-row">
-                            <div class="md:w-5/12"></div>
-                            <div class="w-10 h-10 bg-blue-600 rounded-full border-4 border-white shadow flex items-center justify-center text-white font-bold z-10 shrink-0 mb-4 md:mb-0">⭐</div>
-                            <div class="md:w-5/12 text-center md:text-left mb-4 md:mb-0">
-                                <h4 class="font-bold text-lg text-blue-700">최종 유치 확정</h4>
-                                <p class="text-sm text-slate-600">판교 테크노밸리에 부지 확정. 글로벌 AI 표준화 회의 정례화.</p>
+                        <div class="flex flex-col md:flex-row items-start md:items-center w-full justify-between">
+                            <div class="hidden md:block md:w-5/12"></div>
+                            <div class="absolute left-6 md:left-1/2 transform -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10 bg-blue-600 rounded-full border-4 border-white shadow flex items-center justify-center text-white text-sm sm:text-base font-bold z-10 shrink-0">⭐</div>
+                            <div class="w-full md:w-5/12 pl-14 md:pl-8 text-left">
+                                <span class="text-xs font-bold text-blue-600 uppercase tracking-widest block md:hidden mb-0.5">최종 성과</span>
+                                <h4 class="font-bold text-base sm:text-lg text-blue-700">최종 유치 확정</h4>
+                                <p class="text-xs sm:text-sm text-slate-600 mt-0.5">판교 테크노밸리에 부지 확정. 글로벌 AI 표준화 회의 정례화.</p>
                             </div>
                         </div>
                     </div>
@@ -324,62 +332,62 @@
         </section>
 
         <!-- 4. 투자 전략 (Interactive Dashboard) -->
-        <section id="investment" class="scroll-mt-24 pb-20">
-            <div class="mb-8">
-                <h2 class="text-3xl font-bold text-slate-900 mb-4 flex items-center gap-3">
-                    <span class="text-blue-600">04.</span> 핵심 밸류체인 분석 및 투자 전략 🎯
+        <section id="investment" class="scroll-mt-24 pb-12 sm:pb-20">
+            <div class="mb-6 sm:mb-8">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-3 sm:mb-4 flex items-center gap-2 sm:gap-3">
+                    <span class="text-blue-600 text-xl sm:text-2xl">04.</span> 핵심 밸류체인 분석 및 투자 전략 🎯
                 </h2>
-                <p class="text-lg text-slate-600 leading-relaxed bg-white p-6 rounded-xl border-l-4 border-red-500 shadow-sm">
+                <p class="text-sm sm:text-lg text-slate-600 leading-relaxed bg-white p-4 sm:p-6 rounded-xl border-l-4 border-red-500 shadow-sm">
                     정부의 '소버린 AI' 인프라 드라이브와 '글로벌 거버넌스' 주도권 확보는 국내 주식 시장에 명확한 메가트렌드를 제시합니다. 단순한 소프트웨어를 넘어 물리적 인프라, 전력, 특화 하드웨어, 보안 영역으로 자금이 폭발적으로 이동하고 있습니다. 아래 섹터별 전망을 클릭하여 상세 분석을 확인하십시오.
                 </p>
             </div>
 
-            <div class="bg-white rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
-                <!-- Sector Navigation Tabs -->
-                <div class="flex flex-wrap border-b border-slate-200 bg-slate-50">
-                    <button class="sector-btn flex-1 py-4 px-6 text-center font-bold text-blue-600 border-b-2 border-blue-600 bg-white transition-colors" onclick="changeSector('infra', this)">
+            <div class="bg-white rounded-2xl sm:rounded-3xl shadow-lg border border-slate-200 overflow-hidden">
+                <!-- Swipe-friendly horizontal sector buttons on mobile -->
+                <div class="flex overflow-x-auto no-scrollbar border-b border-slate-200 bg-slate-50 scroll-smooth snap-x snap-mandatory">
+                    <button class="sector-btn flex-1 min-w-[140px] md:min-w-0 snap-align-start py-3 sm:py-4 px-4 sm:px-6 text-center text-xs sm:text-sm font-bold text-blue-600 border-b-2 border-blue-600 bg-white transition-colors whitespace-nowrap" onclick="changeSector('infra', this)">
                         🏗️ AI 인프라 & 전력
                     </button>
-                    <button class="sector-btn flex-1 py-4 px-6 text-center font-bold text-slate-500 hover:text-slate-800 border-b-2 border-transparent transition-colors" onclick="changeSector('chip', this)">
+                    <button class="sector-btn flex-1 min-w-[140px] md:min-w-0 snap-align-start py-3 sm:py-4 px-4 sm:px-6 text-center text-xs sm:text-sm font-bold text-slate-500 hover:text-slate-800 border-b-2 border-transparent transition-colors whitespace-nowrap" onclick="changeSector('chip', this)">
                         💻 국산 AI 반도체
                     </button>
-                    <button class="sector-btn flex-1 py-4 px-6 text-center font-bold text-slate-500 hover:text-slate-800 border-b-2 border-transparent transition-colors" onclick="changeSector('software', this)">
+                    <button class="sector-btn flex-1 min-w-[140px] md:min-w-0 snap-align-start py-3 sm:py-4 px-4 sm:px-6 text-center text-xs sm:text-sm font-bold text-slate-500 hover:text-slate-800 border-b-2 border-transparent transition-colors whitespace-nowrap" onclick="changeSector('software', this)">
                         ☁️ B2B 특화 AI/SaaS
                     </button>
-                    <button class="sector-btn flex-1 py-4 px-6 text-center font-bold text-slate-500 hover:text-slate-800 border-b-2 border-transparent transition-colors" onclick="changeSector('security', this)">
+                    <button class="sector-btn flex-1 min-w-[140px] md:min-w-0 snap-align-start py-3 sm:py-4 px-4 sm:px-6 text-center text-xs sm:text-sm font-bold text-slate-500 hover:text-slate-800 border-b-2 border-transparent transition-colors whitespace-nowrap" onclick="changeSector('security', this)">
                         🔒 보안 & 규제 기술
                     </button>
                 </div>
 
                 <!-- Interactive Content Area -->
-                <div class="p-8 grid md:grid-cols-5 gap-8">
+                <div class="p-4 sm:p-8 grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-8">
                     <!-- Text Details -->
-                    <div class="md:col-span-2 space-y-6">
+                    <div class="md:col-span-2 space-y-4 sm:space-y-6">
                         <div>
-                            <h3 id="sector-title" class="text-2xl font-black text-slate-900 mb-2">데이터센터 및 전력망 확충</h3>
-                            <p id="sector-desc" class="text-slate-600 leading-relaxed">
+                            <h3 id="sector-title" class="text-xl sm:text-2xl font-black text-slate-900 mb-1.5 sm:mb-2">데이터센터 및 전력망 확충</h3>
+                            <p id="sector-desc" class="text-xs sm:text-sm text-slate-600 leading-relaxed">
                                 소버린 AI의 근간은 국가 내에 위치한 데이터센터입니다. 정부 주도하에 비수도권에 대규모 데이터센터 클러스터가 구축되고 있습니다. 핵심은 막대한 전력 소모를 감당할 <strong>전력 인프라(변압기, 전선)</strong>와 열을 식히는 <strong>차세대 공조 시스템(액침냉각 등)</strong>입니다. 가장 확실한 실적이 찍히는 'Pick-and-Shovel(곡괭이와 삽)' 섹터입니다.
                             </p>
                         </div>
                         
-                        <div class="bg-blue-50 p-4 rounded-xl border border-blue-100">
-                            <h4 class="font-bold text-blue-800 mb-2 text-sm uppercase tracking-wider">Top Picks (관심 기업군)</h4>
-                            <ul id="sector-picks" class="space-y-2 text-sm text-slate-700 font-medium">
+                        <div class="bg-blue-50 p-3 sm:p-4 rounded-xl border border-blue-100">
+                            <h4 class="font-bold text-blue-800 mb-1.5 sm:mb-2 text-xs sm:text-sm uppercase tracking-wider">Top Picks (관심 기업군)</h4>
+                            <ul id="sector-picks" class="space-y-1.5 text-xs sm:text-sm text-slate-700 font-medium">
                                 <li>• 초고압 변압기 및 전선 업체</li>
                                 <li>• 데이터센터 공조/액침냉각 장비</li>
                                 <li>• 신재생에너지(수소연료전지 등) 인프라</li>
                             </ul>
                         </div>
-                        <div class="text-sm text-slate-500 italic">
+                        <div class="text-[10px] sm:text-sm text-slate-500 italic">
                             * 정부 가이드라인: '26년까지 공공 데이터센터 PUE(전력효율지수) 1.2 이하 의무화
                         </div>
                     </div>
 
                     <!-- Dynamic Chart -->
                     <div class="md:col-span-3">
-                        <div class="flex justify-between items-end mb-4">
-                            <h4 class="font-bold text-slate-800">섹터별 투자 심리 및 정부 예산 투입 추이</h4>
-                            <span class="text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded">단위: 백억원 / 2024=100</span>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-1 mb-3 sm:mb-4">
+                            <h4 class="font-bold text-sm sm:text-base text-slate-800">섹터별 투자 심리 및 정부 예산 투입 추이</h4>
+                            <span class="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded self-start sm:self-auto">단위: 백억원 / 2024=100</span>
                         </div>
                         <div class="chart-container">
                             <canvas id="investmentChart"></canvas>
@@ -392,9 +400,9 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 py-12 text-center text-sm">
-        <div class="max-w-7xl mx-auto px-4">
-            <p class="mb-4">본 보고서는 가상의 시나리오를 바탕으로 정보 제공 및 UI/UX 시연을 목적으로 작성되었습니다.<br>실제 투자 권유나 종목 추천이 아니며, 제공된 데이터는 프로토타입용 모의 데이터입니다.</p>
+    <footer class="bg-slate-900 text-slate-400 py-8 sm:py-12 text-center text-[11px] sm:text-sm px-4">
+        <div class="max-w-7xl mx-auto">
+            <p class="mb-3 sm:mb-4 leading-relaxed">본 보고서는 가상의 시나리오를 바탕으로 정보 제공 및 UI/UX 시연을 목적으로 작성되었습니다.<br class="hidden sm:inline">실제 투자 권유나 종목 추천이 아니며, 제공된 데이터는 프로토타입용 모의 데이터입니다.</p>
             <p>© 2026 K-AI Policy & Investment Analysis. All rights reserved.</p>
         </div>
     </footer>
